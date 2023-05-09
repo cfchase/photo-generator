@@ -11,7 +11,7 @@ RUN npm run build
 
 FROM registry.access.redhat.com/ubi9/python-39:1-108
 WORKDIR /projects
-RUN mkdir -p frontend
+#RUN mkdir -p frontend
 COPY --from=build-step /projects/build ./frontend/build
 
 # By default, listen on port 8081
