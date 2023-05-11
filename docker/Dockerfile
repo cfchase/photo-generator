@@ -4,7 +4,7 @@ WORKDIR /projects
 ENV PATH /projects/node_modules/.bin:$PATH
 COPY --chown=default:root ./frontend/package.json /frontend/package-lock.json* ./
 COPY --chown=default:root ./frontend/src ./src
-COPY --chown=default:root ./frontend/public ./public
+#COPY --chown=default:root ./frontend/public ./public
 #WORKDIR /projects/frontend
 RUN npm install
 RUN npm run build
