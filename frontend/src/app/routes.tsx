@@ -32,7 +32,7 @@ const routes: AppRouteConfig[] = [
     exact: true,
     label: 'Dashboard',
     path: '/',
-    title: 'PatternFly Seed | Main Dashboard',
+    title: "Where's Teddy",
   },
   {
     component: Support,

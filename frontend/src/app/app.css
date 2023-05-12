@@ -7,3 +7,7 @@ html, body, #root {
   --pf-c-content--blockquote--BorderLeftColor: purple; /* changes all <blockquote> left border color to purple */
   --pf-c-content--hr--BackgroundColor: lemonchiffon; /* changes a <hr> color to lemonchiffon */
 }
+
+.pf-c-page__header-brand-link img {
+    max-height: 80px;
+}

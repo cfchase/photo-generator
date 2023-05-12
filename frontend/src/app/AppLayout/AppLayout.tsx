@@ -11,7 +11,7 @@ import {
   SkipToContent
 } from '@patternfly/react-core';
 import { routes, IAppRoute, IAppRouteGroup } from '@app/routes';
-import logo from '@app/bgimages/Patternfly-Logo.svg';
+import logo from '../../images/logos/logo_transparent_cropped.png';
 
 interface IAppLayout {
   children: React.ReactNode;
@@ -31,63 +31,24 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     setIsMobileView(props.mobileView);
   };
 
-  function LogoImg() {
+function LogoImg() {
     const history = useHistory();
     function handleClick() {
-      history.push('/');
+        history.push('/');
     }
-    return (
-      <img src={logo} onClick={handleClick} alt="PatternFly Logo" />
-    );
-  }
+    return <img src={logo} onClick={handleClick} alt="Logo" />;
+}
 
   const Header = (
     <PageHeader
       logo={<LogoImg />}
-      showNavToggle
+      showNavToggle={false}
       isNavOpen={isNavOpen}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
     />
   );
 
   const location = useLocation();
-
-  const renderNavItem = (route: IAppRoute, index: number) => (
-    <NavItem key={`${route.label}-${index}`} id={`${route.label}-${index}`} isActive={route.path === location.pathname}>
-      <NavLink exact={route.exact} to={route.path}>
-        {route.label}
-      </NavLink>
-    </NavItem>
-  );
-
-  const renderNavGroup = (group: IAppRouteGroup, groupIndex: number) => (
-    <NavExpandable
-      key={`${group.label}-${groupIndex}`}
-      id={`${group.label}-${groupIndex}`}
-      title={group.label}
-      isActive={group.routes.some((route) => route.path === location.pathname)}
-    >
-      {group.routes.map((route, idx) => route.label && renderNavItem(route, idx))}
-    </NavExpandable>
-  );
-
-  const Navigation = (
-    <Nav id="nav-primary-simple" theme="dark">
-      <NavList id="nav-list-simple">
-        {routes.map(
-          (route, idx) => route.label && (!route.routes ? renderNavItem(route, idx) : renderNavGroup(route, idx))
-        )}
-      </NavList>
-    </Nav>
-  );
-
-  const Sidebar = (
-    <PageSidebar
-      theme="dark"
-      nav={Navigation}
-      isNavOpen={isMobileView ? isNavOpenMobile : isNavOpen} />
-  );
-
   const pageId = 'primary-app-container';
 
   const PageSkipToContent = (
@@ -103,7 +64,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     <Page
       mainContainerId={pageId}
       header={Header}
-      sidebar={Sidebar}
       onPageResize={onPageResize}
       skipToContent={PageSkipToContent}>
       {children}
