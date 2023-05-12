@@ -2,17 +2,18 @@ FROM registry.access.redhat.com/ubi8/nodejs-16:latest as build-step
 
 WORKDIR /projects
 ENV PATH /projects/node_modules/.bin:$PATH
-COPY --chown=default:root ./frontend/package.json /frontend/package-lock.json* ./
+COPY --chown=default:root ./frontend/* ./
 COPY --chown=default:root ./frontend/src ./src
-COPY --chown=default:root ./frontend/public ./public
-#WORKDIR /projects/frontend
+COPY --chown=default:root ./frontend/stories ./stories
+COPY --chown=default:root ./frontend/.storybook .storybook
+COPY --chown=default:root ./frontend/__mocks__ ./__mocks__
 RUN npm install
 RUN npm run build
 
 FROM registry.access.redhat.com/ubi9/python-39:1-108
 WORKDIR /projects
 #RUN mkdir -p frontend
-COPY --from=build-step /projects/build ./frontend/build
+COPY --from=build-step /projects/dist ./frontend/dist
 
 # By default, listen on port 8081
 EXPOSE 8081/tcp
