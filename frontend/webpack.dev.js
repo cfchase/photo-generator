@@ -15,6 +15,9 @@ module.exports = merge(common('development'), {
     port: PORT,
     historyApiFallback: true,
     open: true,
+    proxy: {
+      '/api': `http://0.0.0.0:5000`,
+    },
     static: {
       directory: path.resolve(__dirname, 'dist'),
     },

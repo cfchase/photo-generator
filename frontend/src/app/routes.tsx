@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch, useLocation } from 'react-router-dom';
 import { Dashboard } from '@app/Dashboard/Dashboard';
+import { Album } from '@app/Album/Album';
 import { Support } from '@app/Support/Support';
 import { GeneralSettings } from '@app/Settings/General/GeneralSettings';
 import { ProfileSettings } from '@app/Settings/Profile/ProfileSettings';
@@ -35,11 +36,11 @@ const routes: AppRouteConfig[] = [
     title: "Where's Teddy",
   },
   {
-    component: Support,
+    component: Album,
     exact: true,
-    label: 'Support',
-    path: '/support',
-    title: 'PatternFly Seed | Support Page',
+    label: 'Album',
+    path: '/album/:id',
+    title: 'Album',
   },
   {
     label: 'Settings',
@@ -50,13 +51,6 @@ const routes: AppRouteConfig[] = [
         label: 'General',
         path: '/settings/general',
         title: 'PatternFly Seed | General Settings',
-      },
-      {
-        component: ProfileSettings,
-        exact: true,
-        label: 'Profile',
-        path: '/settings/profile',
-        title: 'PatternFly Seed | Profile Settings',
       },
     ],
   },

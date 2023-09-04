@@ -8,7 +8,7 @@ import {
   Page,
   PageHeader,
   PageSidebar,
-  SkipToContent
+  SkipToContent,
 } from '@patternfly/react-core';
 import { routes, IAppRoute, IAppRouteGroup } from '@app/routes';
 import logo from '../../images/logos/logo_transparent_cropped.png';
@@ -31,13 +31,15 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children }) => {
     setIsMobileView(props.mobileView);
   };
 
-function LogoImg() {
+  function LogoImg() {
     const history = useHistory();
+
     function handleClick() {
-        history.push('/');
+      history.push('/');
     }
+
     return <img src={logo} onClick={handleClick} alt="Logo" />;
-}
+  }
 
   const Header = (
     <PageHeader
@@ -52,20 +54,19 @@ function LogoImg() {
   const pageId = 'primary-app-container';
 
   const PageSkipToContent = (
-    <SkipToContent onClick={(event) => {
-      event.preventDefault();
-      const primaryContentContainer = document.getElementById(pageId);
-      primaryContentContainer && primaryContentContainer.focus();
-    }} href={`#${pageId}`}>
+    <SkipToContent
+      onClick={(event) => {
+        event.preventDefault();
+        const primaryContentContainer = document.getElementById(pageId);
+        primaryContentContainer && primaryContentContainer.focus();
+      }}
+      href={`#${pageId}`}
+    >
       Skip to Content
     </SkipToContent>
   );
   return (
-    <Page
-      mainContainerId={pageId}
-      header={Header}
-      onPageResize={onPageResize}
-      skipToContent={PageSkipToContent}>
+    <Page mainContainerId={pageId} header={Header} onPageResize={onPageResize} skipToContent={PageSkipToContent}>
       {children}
     </Page>
   );
