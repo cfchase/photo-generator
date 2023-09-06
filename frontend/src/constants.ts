@@ -1,3 +1,3 @@
-const GEN_PHRASE = 'a photo of rhteddy';
+const GEN_PHRASE = 'a photo of a rhteddy dog';
 
 export { GEN_PHRASE };

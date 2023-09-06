@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import grpc_predict_v2_pb2 as grpc__predict__v2__pb2
+from text_to_image import grpc_predict_v2_pb2 as grpc__predict__v2__pb2
 
 
 class GRPCInferenceServiceStub(object):
@@ -52,7 +52,7 @@ class GRPCInferenceServiceServicer(object):
     """
 
     def ServerLive(self, request, context):
-        """The ServerLive API indicates if the inference server is able to receive 
+        """The ServerLive API indicates if the inference server is able to receive
         and respond to metadata and inference requests.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -74,8 +74,8 @@ class GRPCInferenceServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ServerMetadata(self, request, context):
-        """The ServerMetadata API provides information about the server. Errors are 
-        indicated by the google.rpc.Status returned for the request. The OK code 
+        """The ServerMetadata API provides information about the server. Errors are
+        indicated by the google.rpc.Status returned for the request. The OK code
         indicates success and other codes indicate failure.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -83,8 +83,8 @@ class GRPCInferenceServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ModelMetadata(self, request, context):
-        """The per-model metadata API provides information about a model. Errors are 
-        indicated by the google.rpc.Status returned for the request. The OK code 
+        """The per-model metadata API provides information about a model. Errors are
+        indicated by the google.rpc.Status returned for the request. The OK code
         indicates success and other codes indicate failure.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -93,7 +93,7 @@ class GRPCInferenceServiceServicer(object):
 
     def ModelInfer(self, request, context):
         """The ModelInfer API performs inference using the specified model. Errors are
-        indicated by the google.rpc.Status returned for the request. The OK code 
+        indicated by the google.rpc.Status returned for the request. The OK code
         indicates success and other codes indicate failure.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)

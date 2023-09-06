@@ -1,12 +1,11 @@
 from flask import Flask, jsonify, request, send_file, send_from_directory
 import os
 import glob
-import shutil
 import json
 from datetime import datetime
 import logging
 
-from image_generator import ImageGenerator
+from text_to_image import ImageGenerator
 
 IMAGES_PATH = os.environ.get("IMAGES_PATH", "/tmp/photo-generator/images")
 
@@ -52,13 +51,18 @@ def create_prediction():
         }
     ]
 
-    for index, image in enumerate(images):
+    for index in range(1):
+        image = {
+                "status": "QUEUED",
+                "progress": 0,
+                "file": f"/api/images/{id}/image-{index}.jpg"
+            }
+
         with open(os.path.join(IMAGES_PATH, id, f"image-{index}.json"), "w") as f:
             json.dump(image, f)
             ImageGenerator(id,
                            index,
                            body.get("prompt"))
-            # shutil.copyfile(os.path.join(IMAGES_PATH, "dog", f"image-{index}.jpg"), os.path.join(IMAGES_PATH, id, f"image-{index}.jpg"))
 
     prediction["images"] = images
     return jsonify(prediction)
@@ -83,8 +87,6 @@ def get_prediction(id):
 
 @app.route("/api/images/<path:path>", methods=["GET"])
 def get_image(path):
-    print(path)
-
     return send_file(os.path.join(IMAGES_PATH, path), mimetype="image/jpeg")
 
 
