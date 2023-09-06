@@ -20,7 +20,7 @@ WORKDIR /opt/app-root/src
 
 # Copy the content of the local src directory to the working directory
 COPY . .
-COPY --from=build-step /opt/app-root/build ./frontend/build
+COPY --from=build-step /opt/app-root/dist ./frontend/dist
 
 # Install any dependencies
 RUN pip install -r requirements.txt
@@ -30,5 +30,4 @@ EXPOSE 8081/tcp
 ENV FLASK_PORT=8081
 
 # Specify the command to run on container start
-CMD [ "python", "./app.py" ]
 CMD ["gunicorn","--config", "python:gunicorn_config", "app:app"]

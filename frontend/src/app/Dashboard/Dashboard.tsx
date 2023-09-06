@@ -13,7 +13,7 @@ const Dashboard: React.FunctionComponent = () => {
   const [entry, setEntry] = React.useState('');
   const history = useHistory();
 
-  const handleNameChange = (name: string) => {
+  const handleEntryChange = (name: string) => {
     setEntry(name);
   };
 
@@ -62,7 +62,7 @@ const Dashboard: React.FunctionComponent = () => {
               name="simple-form-name-01"
               aria-describedby="simple-form-name-01-helper"
               value={entry}
-              onChange={handleNameChange}
+              onChange={handleEntryChange}
             />
           </FormGroup>
           <ActionGroup>

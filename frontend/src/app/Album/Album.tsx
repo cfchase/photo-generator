@@ -1,23 +1,15 @@
 import * as React from 'react';
 import {
-  ActionGroup,
   Button,
-  Form,
-  FormGroup,
   Gallery,
   GalleryItem,
   PageSection,
-  Popover,
   Progress,
   ProgressSize,
-  Split,
-  SplitItem,
   Stack,
   StackItem,
   TextContent,
-  TextInput,
   Text,
-  Title,
 } from '@patternfly/react-core';
 
 import './Album.css';
@@ -39,9 +31,8 @@ interface Prediction {
 
 const Album: React.FunctionComponent = () => {
   const intervalref = React.useRef<number | null>(null);
-  const [entry, setEntry] = React.useState('');
   const [prediction, setPrediction] = React.useState(null as Prediction | null);
-  const [inProgress, setInProgress] = React.useState(false);
+  const [inProgress, setInProgress] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
   const [galleryItems, setGalleryItems] = React.useState([] as any[]);
   const [intervalId, setIntervalId] = React.useState(null as any);
@@ -49,16 +40,18 @@ const Album: React.FunctionComponent = () => {
   const history = useHistory();
 
   async function getAlbum(id: string): Promise<void> {
-    if (!id) {
+    if (!id || inProgress) {
       return;
     }
 
+    setInProgress(1);
     const response = await fetch(`/api/predictions/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    setInProgress(0);
 
     if (!response.ok) {
       throw new Error('Network response was not ok.');
@@ -66,7 +59,10 @@ const Album: React.FunctionComponent = () => {
 
     const responseJson = await response.json();
     setPrediction(responseJson);
-    setProgress(responseJson.images?.[0]?.progress);
+
+    const progressArray = responseJson.images?.map((i) => i.progress).filter((p) => p == 0 || p);
+    const minProgress = Math.min(...progressArray);
+    setProgress(minProgress);
     setGalleryItems(responseJson.images);
     return responseJson;
   }
@@ -85,6 +81,9 @@ const Album: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     getAlbum(id);
+    intervalref.current = window.setInterval(() => {
+      getAlbum(id);
+    }, 2000);
 
     return () => {
       if (intervalref.current !== null) {
@@ -92,22 +91,6 @@ const Album: React.FunctionComponent = () => {
       }
     };
   }, []);
-
-  const handleNameChange = (name: string) => {
-    setEntry(name);
-  };
-
-  const handleClick = () => {
-    const newIntervalId = setInterval(() => {
-      console.log('timer triggered');
-      setProgress(() => progress + 1);
-    }, 1000);
-    setIntervalId(newIntervalId);
-  };
-  const handleStopClick = () => {
-    clearInterval(intervalId);
-    setIntervalId(null);
-  };
 
   const handleReset = () => {
     history.push('/');
