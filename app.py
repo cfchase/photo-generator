@@ -8,7 +8,7 @@ import logging
 
 from image_generator import ImageGenerator
 
-IMAGES_PATH = os.environ.get("IMAGES_PATH", "./images")
+IMAGES_PATH = os.environ.get("IMAGES_PATH", "/tmp/photo-generator/images")
 
 app = Flask(__name__, static_folder="./frontend/dist", static_url_path="/")
 

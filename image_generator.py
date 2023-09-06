@@ -4,7 +4,7 @@ import json
 import shutil
 import threading
 
-IMAGES_PATH = os.environ.get("IMAGES_PATH", "./images")
+IMAGES_PATH = os.environ.get("IMAGES_PATH", "/tmp/photo-generator/images")
 
 class ImageGenerator:
     def __init__ (self, prediction_id, image_id, prompt):
