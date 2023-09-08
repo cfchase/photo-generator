@@ -1,13 +1,12 @@
 from flask import Flask, jsonify, request, send_file, send_from_directory
 import os
-import glob
 import json
 from datetime import datetime
-import logging
-
 from text_to_image import ImageGenerator
+from utils import storage
 
 IMAGES_PATH = os.environ.get("IMAGES_PATH", "/tmp/photo-generator/images")
+NUM_GEN = int(os.environ.get("NUM_GEN", "1"))
 
 app = Flask(__name__, static_folder="./frontend/dist", static_url_path="/")
 
@@ -31,38 +30,23 @@ def status():
 def create_prediction():
     data = request.data or "{}"
     body = json.loads(data)
-    # return jsonify(predict(body))
-    print(body)
     id = datetime.now().strftime("%Y%m%d%H%M%S%f")
-    os.makedirs(os.path.join(IMAGES_PATH, id), exist_ok=True)
+    storage.make_dirs(id)
 
-    prediction = {
-        "id": id,
-        "prompt": body.get("prompt")
-    }
-    with open(f"{IMAGES_PATH}/{id}/prediction.json", "w") as f:
-        json.dump(prediction, f)
+    prediction = {"id": id, "prompt": body.get("prompt")}
+    storage.write_json(prediction, f"{id}/prediction.json")
 
-    images = [
-        {
+    images = []
+
+    for index in range(NUM_GEN):
+        image_json = {
             "status": "QUEUED",
             "progress": 0,
-            "file": f"/api/images/{id}/image-0.jpg"
+            "file": f"/api/images/{id}/image-{index}.jpg"
         }
-    ]
-
-    for index in range(1):
-        image = {
-                "status": "QUEUED",
-                "progress": 0,
-                "file": f"/api/images/{id}/image-{index}.jpg"
-            }
-
-        with open(os.path.join(IMAGES_PATH, id, f"image-{index}.json"), "w") as f:
-            json.dump(image, f)
-            ImageGenerator(id,
-                           index,
-                           body.get("prompt"))
+        images.append(image_json)
+        storage.write_json(image_json, f"{id}/image-{index}.json")
+        ImageGenerator(id, index, body.get("prompt"))
 
     prediction["images"] = images
     return jsonify(prediction)
@@ -70,15 +54,13 @@ def create_prediction():
 
 @app.route("/api/predictions/<string:id>", methods=["GET"])
 def get_prediction(id):
-    with open(os.path.join(IMAGES_PATH, id, "prediction.json"), "r") as f:
-        prediction = json.load(f)
+    prediction = storage.read_json(f"{id}/prediction.json")
 
-    image_files = sorted(glob.glob(os.path.join(IMAGES_PATH, id, f"image-*.json")))
+    image_files = sorted(storage.list_files(id, f"*image-*.json"))
     images = []
     for index, fname in enumerate(image_files):
-        with open(fname, "r") as f:
-            img = json.load(f)
-            images.append(img)
+        img = storage.read_json(fname)
+        images.append(img)
 
     prediction["images"] = images
 
@@ -87,7 +69,7 @@ def get_prediction(id):
 
 @app.route("/api/images/<path:path>", methods=["GET"])
 def get_image(path):
-    return send_file(os.path.join(IMAGES_PATH, path), mimetype="image/jpeg")
+    return send_file(storage.read_file(path), mimetype="image/jpeg")
 
 
 if __name__ == "__main__":

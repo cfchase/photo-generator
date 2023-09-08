@@ -17,15 +17,16 @@ import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { GEN_PHRASE } from '../../constants';
 
+interface GeneratedImage {
+  file: string;
+  progress: number;
+  prompt: string;
+  status: string;
+}
+
 interface Prediction {
   id: string;
-  images: [
-    {
-      file: string;
-      progress: number;
-      status: string;
-    }
-  ];
+  images: GeneratedImage[];
   prompt: string;
 }
 
@@ -96,50 +97,68 @@ const Album: React.FunctionComponent = () => {
     history.push('/');
   };
 
-  const renderProgress = () => {
+  const renderGalleryItem = (g: any, index: number) => {
+    let itemContent;
+
+    if (g.status === 'COMPLETE') {
+      itemContent = <img src={g.file} alt={`dog image ${index}`} />;
+    } else {
+      const title = g.status
+        ?.toLowerCase()
+        .replace('_', ' ')
+        .replace(/\b[a-z]/g, function (letter) {
+          return letter.toUpperCase();
+        });
+      itemContent = <Progress value={g.progress} title={title} />;
+    }
+    return <GalleryItem key={`gallery-item-${index}`}>{itemContent}</GalleryItem>;
+  };
+
+  const renderReset = () => {
+    if (!galleryItems || galleryItems.length == 0) {
+      return null;
+    }
+
+    const progressArray = galleryItems?.map((i) => i.progress).filter((p) => p == 0 || p);
+    const minProgress = Math.min(...progressArray);
+
+    if (minProgress < 100) {
+      return null;
+    }
+
     return (
-      <PageSection style={progress >= 0 && progress < 100 ? { display: 'block' } : { display: 'none' }}>
-        <Progress value={progress} title="Sending Teddy..." size={ProgressSize.lg} />
+      <PageSection>
+        <Stack hasGutter>
+          <StackItem>
+            <TextContent>
+              <Text component="h1">Teddy is {prediction?.prompt?.replace(GEN_PHRASE, '')}</Text>
+            </TextContent>
+          </StackItem>
+          <StackItem>
+            <Button variant="primary" onClick={() => handleReset()}>
+              Send him somewhere else
+            </Button>
+          </StackItem>
+        </Stack>
       </PageSection>
     );
   };
-
   const renderGallery = () => {
-    if (progress < 100 || !galleryItems || galleryItems.length == 0) {
+    if (!galleryItems || galleryItems.length == 0) {
       return null;
     }
     return (
-      <>
-        <PageSection>
-          <Stack hasGutter>
-            <StackItem>
-              <TextContent>
-                <Text component="h1">Teddy is {prediction?.prompt?.replace(GEN_PHRASE, '')}</Text>
-              </TextContent>
-            </StackItem>
-            <StackItem>
-              <Button variant="primary" onClick={() => handleReset()}>
-                Send him somewhere else
-              </Button>
-            </StackItem>
-          </Stack>
-        </PageSection>
-        <PageSection>
-          <Gallery maxWidths={{ default: '512px' }} role="list" hasGutter>
-            {galleryItems.map((g, index) => (
-              <GalleryItem key={`gallery-item-${index}`}>
-                {g.status == 'COMPLETE' ? <img src={g.file} alt={`dog image ${index}`} /> : ''}
-              </GalleryItem>
-            ))}
-          </Gallery>
-        </PageSection>
-      </>
+      <PageSection>
+        <Gallery role="list" maxWidths={{ default: '512px' }} hasGutter>
+          {galleryItems.map(renderGalleryItem)}
+        </Gallery>
+      </PageSection>
     );
   };
 
   return (
     <>
-      {renderProgress()}
+      {renderReset()}
       {renderGallery()}
     </>
   );

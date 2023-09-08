@@ -12,6 +12,7 @@ from PIL import Image
 
 import grpc
 from text_to_image import grpc_predict_v2_pb2, grpc_predict_v2_pb2_grpc
+from utils import storage
 
 IMAGES_PATH = os.environ.get("IMAGES_PATH", "/tmp/photo-generator/images")
 
@@ -121,10 +122,9 @@ class ImageGenerator:
         if progress is not None:
             self.image_json["progress"] = progress
 
-        json_file = os.path.join(IMAGES_PATH, self.prediction_id, f"image-{self.image_id}.json")
+        json_file = os.path.join(self.prediction_id, f"image-{self.image_id}.json")
+        storage.write_json(self.image_json, json_file)
 
-        with open(json_file, "w") as f:
-            json.dump(self.image_json, f)
 
     def run_inference_pipeline(self):
         scheduler = DDIMScheduler.from_pretrained("cfchase/stable-diffusion-rhteddy", subfolder="scheduler")
@@ -181,7 +181,7 @@ class ImageGenerator:
             # compute the previous noisy sample x_t -> x_t-1
             latents = scheduler.step(noise_pred, t, latents).prev_sample
             i += 1
-            if i % 2 == 0:
+            if i % 5 == 0:
                 self.write_image_json(None, math.floor(i / num_inference_steps * 99))
 
 
@@ -193,7 +193,7 @@ class ImageGenerator:
         image = (image.permute(1, 2, 0) * 255).to(torch.uint8).cpu().numpy()
         images = (image * 255).round().astype("uint8")
         image = Image.fromarray(image)
-        image.save(os.path.join(IMAGES_PATH, self.prediction_id, f"image-{self.image_id}.jpg"))
+        storage.write_image(image, os.path.join(self.prediction_id, f"image-{self.image_id}.jpg"))
 
     def run(self):
         print(f"Running image generator {self.prediction_id}/image-{self.image_id} on prompt {self.prompt}")
