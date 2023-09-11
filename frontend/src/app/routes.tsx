@@ -32,7 +32,7 @@ const routes: AppRouteConfig[] = [
     exact: true,
     label: 'Dashboard',
     path: '/',
-    title: "Where's Teddy",
+    title: '',
   },
   {
     component: Support,

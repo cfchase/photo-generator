@@ -20,12 +20,12 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
-import teddy1 from '../../images/dog/teddy1.png';
-import teddy2 from '../../images/dog/teddy2.png';
-import teddy3 from '../../images/dog/teddy3.png';
-import teddy4 from '../../images/dog/teddy4.png';
-import teddy5 from '../../images/dog/teddy5.png';
-import teddy6 from '../../images/dog/teddy6.png';
+import airplane1 from '../../images/airplane/1.jpg';
+import airplane2 from '../../images/airplane/2.jpg';
+import airplane3 from '../../images/airplane/3.jpg';
+import airplane4 from '../../images/airplane/4.jpg';
+import airplane5 from '../../images/airplane/5.jpg';
+import airplane6 from '../../images/airplane/6.jpg';
 
 import './Dashboard.css';
 
@@ -47,7 +47,7 @@ const Dashboard: React.FunctionComponent = () => {
       }
       intervalref.current = null;
       setProgress(0);
-      setGalleryItems([teddy1, teddy2, teddy3, teddy4, teddy5, teddy6]);
+      setGalleryItems([airplane1, airplane2, airplane3, airplane4, airplane5, airplane6]);
     }
   }, [progress, intervalref]);
 
@@ -75,7 +75,7 @@ const Dashboard: React.FunctionComponent = () => {
           window.clearInterval(intervalref.current);
         }
         intervalref.current = null;
-        setGalleryItems([teddy1, teddy2, teddy3, teddy4, teddy5, teddy6]);
+        setGalleryItems([airplane1, airplane2, airplane3, airplane4, airplane5, airplane6]);
       }
     }, 50);
   };
@@ -103,14 +103,9 @@ const Dashboard: React.FunctionComponent = () => {
             <StackItem>
               <Split>
                 <SplitItem isFilled>
-                  <TextContent>
-                    <Text component="h1" onClick={() => onSubmit()}>
-                      Teddy is {entry}
-                    </Text>
-                  </TextContent>
-                </SplitItem>
-                <SplitItem isFilled>
-                  <Button variant="primary">Send him somewhere else</Button>
+                  <Button component="a" href="/" variant="primary">
+                    New
+                  </Button>{' '}
                 </SplitItem>
               </Split>
             </StackItem>
@@ -162,7 +157,7 @@ const Dashboard: React.FunctionComponent = () => {
         </Form>
       </PageSection>
       <PageSection style={progress > 0 ? { display: 'block' } : { display: 'none' }}>
-        <Progress value={progress} title="Sending Teddy..." size={ProgressSize.lg} />
+        <Progress value={progress} title="Generating..." size={ProgressSize.lg} />
       </PageSection>
       {renderGallery()}
     </>

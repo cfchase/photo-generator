@@ -11,3 +11,26 @@ html, body, #root {
 .pf-c-page__header-brand-link img {
     max-height: 80px;
 }
+
+.app-header {
+  background-color: #242426;
+}
+
+.pf-c-page__header-brand {
+  padding-left: 0
+}
+
+.pf-c-button.pf-m-primary {
+  background-color: #242426;
+  border-color: #242426;
+  color: white;
+}
+
+
+.pf-c-progress__indicator {
+  background-color: #242426;
+}
+
+.pf-c-progress__bar::before{
+  background-color: white;
+}
